@@ -3,6 +3,7 @@ import rclpy
 from rclpy.executors import MultiThreadedExecutor
 from collector.topic_collector import TopicCollector
 from collector.service_collector import ServiceCollector
+from collector.lifecycle_collector import LifecycleCollector
 from exporter.prometheus_exporter import ROSScopeExporter
 
 
@@ -18,9 +19,13 @@ def main():
     service_node = ServiceCollector()
     service_node.exporter = exporter
 
+    lifecycle_node = LifecycleCollector()
+    lifecycle_node.exporter = exporter
+
     executor = MultiThreadedExecutor()
     executor.add_node(topic_node)
     executor.add_node(service_node)
+    executor.add_node(lifecycle_node)
 
     try:
         print("[ROSscope] Starting collectors...")
@@ -31,6 +36,7 @@ def main():
         executor.shutdown()
         topic_node.destroy_node()
         service_node.destroy_node()
+        lifecycle_node.destroy_node()
         rclpy.shutdown()
         print("[ROSscope] Shut down cleanly.")
 
