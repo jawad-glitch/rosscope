@@ -61,6 +61,18 @@ class ROSScopeExporter:
             'Total number of discovered lifecycle managed nodes'
         )
 
+        self.topic_anomaly = Gauge(
+            'rosscope_topic_anomaly',
+            '1 if topic rate is anomalous, 0 if normal',
+            ['topic', 'msg_type']
+        )
+
+        self.topic_z_score = Gauge(
+            'rosscope_topic_z_score',
+            'Z-score of current topic rate vs rolling baseline',
+            ['topic', 'msg_type']
+        )
+
     def start(self):
         """Start the HTTP server in a background thread."""
         thread = threading.Thread(
@@ -80,6 +92,8 @@ class ROSScopeExporter:
             self.topic_rate_hz.labels(topic=topic, msg_type=msg_type).set(item['rate'])
             self.topic_msg_count.labels(topic=topic, msg_type=msg_type).set(item['count'])
             self.topic_publisher_count.labels(topic=topic, msg_type=msg_type).set(item['publishers'])
+            self.topic_anomaly.labels(topic=topic, msg_type=msg_type).set(item['is_anomaly'])
+            self.topic_z_score.labels(topic=topic, msg_type=msg_type).set(item['z_score'])
 
     def update_services(self, metrics):
         """Update service metrics."""
