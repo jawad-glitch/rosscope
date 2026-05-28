@@ -1,0 +1,25 @@
+services:
+  collector:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.collector
+    container_name: rosscope_collector
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=0
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rosscope_prometheus
+    network_mode: host
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rosscope_grafana
+    network_mode: host
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=rosscope
+    depends_on:
+      - prometheus
