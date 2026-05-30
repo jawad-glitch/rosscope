@@ -102,7 +102,7 @@ z = |current_rate - rolling_mean| / rolling_std
 anomaly flagged if z > 3.0
 ```
  
-A z-score above 3.0 means the current reading is statistically unlikely (~0.3% chance) given the established baseline. No per-topic configuration required — ROSscope learns what normal looks like for each topic automatically.
+A z-score above 3.0 means the current reading is statistically unlikely (~0.3% chance) given the established baseline. No per-topic configuration required, ROSscope learns what normal looks like for each topic automatically.
  
 ---
  
